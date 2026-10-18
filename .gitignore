@@ -15,6 +15,7 @@
 
 
 # Build results
+.worktrees/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
