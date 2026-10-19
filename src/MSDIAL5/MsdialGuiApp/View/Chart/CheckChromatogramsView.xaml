@@ -173,6 +173,19 @@
                                                                     <TranslateTransform Y="-30"/>
                                                                 </chart:Annotator.RenderTransform>
                                                             </chart:Annotator>
+                                                            <chart:Annotator ItemsSource="{Binding Data.DataContext.IdentifiedPeaks.Value, Source={StaticResource ViewRoot}}"
+                                                                             HorizontalPropertyName="ChromXValue"
+                                                                             VerticalPropertyName="Intensity"
+                                                                             LabelPropertyName="Name"
+                                                                             Overlap="Direct"
+                                                                             Brush="DarkRed"
+                                                                             FontSize="11"
+                                                                             Visibility="{Binding Data.DataContext.VisibleIdentifiedPeaks.Value, Converter={StaticResource BooleanToVisibility}, Source={StaticResource ViewRoot}}"
+                                                                             IsHitTestVisible="False">
+                                                                <chart:Annotator.RenderTransform>
+                                                                    <TranslateTransform Y="-50"/>
+                                                                </chart:Annotator.RenderTransform>
+                                                            </chart:Annotator>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -275,7 +288,7 @@
                             <DataTemplate DataType="{x:Type vm:EicSettingViewModel}">
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" MaxHeight="80"/>
+                                        <RowDefinition Height="Auto" MaxHeight="120"/>
                                         <RowDefinition/>
                                         <RowDefinition Height="40"/>
                                     </Grid.RowDefinitions>
@@ -296,6 +309,13 @@
                                         <StackPanel Orientation="Horizontal"
                                                     Margin="4">
                                             <CheckBox Content="MS2TIC" IsChecked="{Binding InsertMS2Tic.Value}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal"
+                                                    Margin="4">
+                                            <CheckBox Content="Show identified metabolites"
+                                                      IsChecked="{Binding ShowIdentifiedPeaks.Value}"
+                                                      ToolTip="Overlay the metabolite name of identified peaks at their retention times on each chromatogram"/>
                                         </StackPanel>
                                     </StackPanel>
 

@@ -11,6 +11,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Reactive.Bindings.Notifiers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -104,6 +105,11 @@ internal sealed class CheckChromatogramsViewModel : ViewModelBase, IDialogProper
             .WithSubscribe(vm => ShowAccumulatedSpectrumAsync(vm, default)).AddTo(Disposables);
 
         VisiblePeakLabel = model.ToReactivePropertySlimAsSynchronized(m => m.VisiblePeakLabel).AddTo(Disposables);
+        IdentifiedPeaks = model.ObserveProperty(m => m.IdentifiedPeaks)
+            .Select(peaks => peaks ?? Array.Empty<ChromatogramPeakFeatureModel>())
+            .ToReadOnlyReactivePropertySlim(Array.Empty<ChromatogramPeakFeatureModel>())
+            .AddTo(Disposables);
+        VisibleIdentifiedPeaks = model.ToReactivePropertySlimAsSynchronized(m => m.VisibleIdentifiedPeaks).AddTo(Disposables);
         DetectPeaksCommand = new ReactiveCommand().WithSubscribe(model.DetectPeaks).AddTo(Disposables);
         AddPeaksCommand = RangeSelectableChromatogramViewModel.Select(vm => vm is { SelectedRange: not null })
             .ToReactiveCommand().WithSubscribe(model.AddPeak).AddTo(Disposables);
@@ -117,7 +123,7 @@ internal sealed class CheckChromatogramsViewModel : ViewModelBase, IDialogProper
 
         ViewModels = [
             new ChromatogramViewModel(ChromatogramsViewModel, RangeSelectableChromatogramViewModel, AccumulatedMs2SpectrumViewModel, AccumulatedMs2SpectrumViewModels, AccumulatedSpecificExperimentMS2SpectrumViewModels, VisiblePeakLabel, ShowAccumulatedMs1SpectrumCommand, ShowAccumulatedSpectrumCommand, CopyAsTableCommand, SaveAsTableCommand),
-            new EicSettingViewModel(DiplayEicSettingValues, InsertTic, InsertBpc, InsertHighestEic, InsertMS2Tic, ApplyCommand, ClearCommand),
+            new EicSettingViewModel(DiplayEicSettingValues, InsertTic, InsertBpc, InsertHighestEic, InsertMS2Tic, VisibleIdentifiedPeaks, ApplyCommand, ClearCommand),
             new PeakPickViewModel(ChromatogramsViewModel, VisiblePeakLabel, DetectPeaksCommand, AddPeaksCommand, ResetPeaksCommand, RemovePeakCommand, ExportPeaksCommand),
         ];
     }
@@ -203,6 +209,9 @@ internal sealed class CheckChromatogramsViewModel : ViewModelBase, IDialogProper
     public ReactiveCommand<DisplayPeakOfChromatogram> RemovePeakCommand { get; }
     public ReactiveCommand ExportPeaksCommand { get; }
 
+    public ReadOnlyReactivePropertySlim<IReadOnlyList<ChromatogramPeakFeatureModel>> IdentifiedPeaks { get; }
+    public ReactivePropertySlim<bool> VisibleIdentifiedPeaks { get; }
+
     public ReactiveCommand ApplyCommand { get; }
     public ReactiveCommand ClearCommand { get; }
 
@@ -258,6 +267,7 @@ internal sealed class EicSettingViewModel(
     ReactivePropertySlim<bool> insertBpc,
     ReactivePropertySlim<bool> insertHighestEic,
     ReactivePropertySlim<bool> insertMS2Tic,
+    ReactivePropertySlim<bool> showIdentifiedPeaks,
     ReactiveCommand applyCommand,
     ReactiveCommand clearCommand) : BindableBase
 {
@@ -267,6 +277,7 @@ internal sealed class EicSettingViewModel(
     public ReactivePropertySlim<bool> InsertBpc { get; } = insertBpc;
     public ReactivePropertySlim<bool> InsertHighestEic { get; } = insertHighestEic;
     public ReactivePropertySlim<bool> InsertMS2Tic { get; } = insertMS2Tic;
+    public ReactivePropertySlim<bool> ShowIdentifiedPeaks { get; } = showIdentifiedPeaks;
     public ReactiveCommand ApplyCommand { get; } = applyCommand;
     public ReactiveCommand ClearCommand { get; } = clearCommand;
 }

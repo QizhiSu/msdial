@@ -31,7 +31,7 @@ internal sealed class CheckChromatogramsModel : BindableBase
     private readonly ObservableCollection<PeakFeatureSearchValueModel> _displaySettingValues;
     private readonly MsScanCompoundSearchUsecase _scanCompoundSearchUsecase;
 
-    public CheckChromatogramsModel(LoadChromatogramsUsecase loadingChromatograms, AccumulateSpectraUsecase accumulateSpectra, ICompoundSearchUsecase<ICompoundResult, PeakSpotModel>? compoundSearch, AdvancedProcessOptionBaseParameter advancedProcessParameter, AnalysisFileBeanModel file, IMessageBroker broker) {
+    public CheckChromatogramsModel(LoadChromatogramsUsecase loadingChromatograms, AccumulateSpectraUsecase accumulateSpectra, ICompoundSearchUsecase<ICompoundResult, PeakSpotModel>? compoundSearch, AdvancedProcessOptionBaseParameter advancedProcessParameter, AnalysisFileBeanModel file, IMessageBroker broker, IReadOnlyList<ChromatogramPeakFeatureModel> identifiedPeaks) {
         LoadChromatogramsUsecase = loadingChromatograms ?? throw new ArgumentNullException(nameof(loadingChromatograms));
         _accumulateSpectra = accumulateSpectra;
         _compoundSearch = compoundSearch;
@@ -44,6 +44,9 @@ internal sealed class CheckChromatogramsModel : BindableBase
         _displaySettingValueCandidates = values;
         _displaySettingValues = new ObservableCollection<PeakFeatureSearchValueModel>(values.Select(v => new PeakFeatureSearchValueModel(v)));
         DisplayEicSettingValues = new ReadOnlyObservableCollection<PeakFeatureSearchValueModel>(_displaySettingValues);
+        IdentifiedPeaks = identifiedPeaks is null
+            ? Array.Empty<ChromatogramPeakFeatureModel>()
+            : IdentifiedPeakFilter.Filter(identifiedPeaks).ToArray();
         _scanCompoundSearchUsecase = new MsScanCompoundSearchUsecase();
 
         var settings = Properties.Settings.Default;
@@ -207,6 +210,14 @@ internal sealed class CheckChromatogramsModel : BindableBase
         set => SetProperty(ref _visiblePeakLabel, value);
     }
     private bool _visiblePeakLabel = true;
+
+    public IReadOnlyList<ChromatogramPeakFeatureModel> IdentifiedPeaks { get; }
+
+    public bool VisibleIdentifiedPeaks {
+        get => _visibleIdentifiedPeaks;
+        set => SetProperty(ref _visibleIdentifiedPeaks, value);
+    }
+    private bool _visibleIdentifiedPeaks = true;
 
     public void DetectPeaks() {
         var detector = new PeakDetection(1, 0d);

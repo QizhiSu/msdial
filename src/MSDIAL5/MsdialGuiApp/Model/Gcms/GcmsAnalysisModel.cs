@@ -251,6 +251,7 @@ namespace CompMs.App.Msdial.Model.Gcms
         }
 
         public AnalysisFileBeanModel AnalysisFileModel => _file;
+        public ObservableCollection<ChromatogramPeakFeatureModel> Ms1Peaks => _peaks;
         public SpectrumFeaturePlotModel PeakPlotModel { get; }
         public GcgcSpectrumPeakPlotModel GcgcPeaks { get; }
         public RawDecSpectrumsModel RawDecSpectrumModel { get; }
