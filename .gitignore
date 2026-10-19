@@ -240,3 +240,7 @@ Assemblies/*.dll
 /src/MSFINDER/MsfinderCommonStandard/Resources/MINEs-StructureDB-vs*.msd
 /src/MSFINDER/MsfinderCommonStandard/Resources/MsfinderStructureDB-VS*.esd
 /src/MSFINDER/MsfinderCommonStandard/Resources/MSMS-DBs-vs*.etm
+
+# WPF XAML pre-compile leaves a temporary sibling .csproj next to the
+# project file (XamlPreCompile / MarkupCompilePass2). It is build output.
+*_wpftmp.csproj
