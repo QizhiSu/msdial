@@ -15,6 +15,12 @@ This is the additional workflow for AI-assisted work in this Fork; it supplement
 - Follow the language version, framework, namespace, formatting, and test conventions of the specific project being changed. There is no single style setting for every project in this repository; inspect nearby code and tests rather than imposing a new convention.
 - Put tests in the closest relevant test project and use its existing test framework and naming style. Prefer test names that describe observable behavior, not implementation details.
 
+### Language
+
+All new project artifacts are written in English. This covers source code, comments, identifiers, string literals, XAML attribute values, commit messages, PR descriptions, ADRs, context docs, and anything else new that lands in the repository. End-user translations live in resource files (e.g. localized UI strings), not in the source. Code review may ask for an English rewrite of any non-English text that arrives in a future change.
+
+Pre-existing non-English text is not part of this rule. Most of it is auto-generated comments in `Properties/AssemblyInfo.cs` produced by an old Japanese Visual Studio template, plus a few Chinese comments in `scripts/dev.ps1`. These are not modified by this rule; they can be cleaned up opportunistically in a separate pass.
+
 ## 3. Branches and worktrees
 
 - A worktree is not required for every task. Use a separate branch and an in-repository `.worktrees/<branch>` worktree for substantial or isolated work: multi-file changes, multiple projects, refactors, or work likely to span sessions. Small, self-contained changes may stay in the current worktree.
